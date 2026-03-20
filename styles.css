@@ -1,0 +1,49 @@
+body {
+    font-family: sans-serif;
+    width: 80%;
+    margin: auto;
+    max-width: 1000px;
+}
+
+h1 {
+    margin-top: 80px;
+    margin-bottom: 0%;
+    font-size: 36pt;
+}
+
+h2 {
+    margin-bottom:0%;
+}
+
+h2, hr {
+    color: darkslateblue;
+}
+
+ul {
+    margin-top: 0%;
+}
+
+.date {
+    font-style: italic;
+    color: gray;
+}
+
+.job {
+    font-weight: bold; 
+}
+
+.skill {
+    font-weight: bold;
+}
+
+#contact {
+    color: gray;
+}
+
+#email:hover {
+    color: rgb(14, 157, 228);
+}
+
+#info {
+    text-align: center;
+}
