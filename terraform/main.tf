@@ -9,6 +9,7 @@ resource "aws_s3_bucket" "resume" {
 
 data "aws_iam_policy_document" "origin_bucket_policy" {
   statement {
+    {
     sid    = "AllowCloudFrontServicePrincipal"
     effect = "Allow"
 
@@ -29,6 +30,42 @@ data "aws_iam_policy_document" "origin_bucket_policy" {
       test     = "StringLike"
       variable = "AWS:SourceArn"
       values   = [aws_cloudfront_distribution.resume_distribution.arn]
+    }
+    }
+    {
+    sid    = "GithubUpload"
+    effect = "Allow"
+
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::876762732886:role/GitHubAction-S3Upload"]
+    }
+
+    actions = [
+      "s3:PutObject",
+      "s3:PutObjectAcl"
+    ]
+
+    resources = [
+      "${aws_s3_bucket.resume.arn}/*"
+    ]
+    }
+    {
+    sid    = "GithubUploadList"
+    effect = "Allow"
+
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::876762732886:role/GitHubAction-S3Upload"]
+    }
+
+    actions = [
+      "s3:ListBucket",
+    ]
+
+    resources = [
+      "${aws_s3_bucket.resume.arn}/*"
+    ]
     }
   }
 }
