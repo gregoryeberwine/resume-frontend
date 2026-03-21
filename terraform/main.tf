@@ -9,7 +9,6 @@ resource "aws_s3_bucket" "resume" {
 
 data "aws_iam_policy_document" "origin_bucket_policy" {
   statement {
-    {
     sid    = "AllowCloudFrontServicePrincipal"
     effect = "Allow"
 
@@ -31,8 +30,9 @@ data "aws_iam_policy_document" "origin_bucket_policy" {
       variable = "AWS:SourceArn"
       values   = [aws_cloudfront_distribution.resume_distribution.arn]
     }
-    }
-    {
+  }
+  statement {
+
     sid    = "GithubUpload"
     effect = "Allow"
 
@@ -49,8 +49,8 @@ data "aws_iam_policy_document" "origin_bucket_policy" {
     resources = [
       "${aws_s3_bucket.resume.arn}/*"
     ]
-    }
-    {
+  }
+  statement {
     sid    = "GithubUploadList"
     effect = "Allow"
 
@@ -66,9 +66,9 @@ data "aws_iam_policy_document" "origin_bucket_policy" {
     resources = [
       "${aws_s3_bucket.resume.arn}/*"
     ]
-    }
   }
 }
+
 
 resource "aws_s3_bucket_policy" "allow_cloudfront_access" {
   bucket = aws_s3_bucket.resume.id
