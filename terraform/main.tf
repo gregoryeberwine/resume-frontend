@@ -64,7 +64,7 @@ data "aws_iam_policy_document" "origin_bucket_policy" {
     ]
 
     resources = [
-      "${aws_s3_bucket.resume.arn}/*"
+      "${aws_s3_bucket.resume.arn}"
     ]
   }
 }
