@@ -20,3 +20,8 @@ jobs:
       - name: upload to the bucket
         run: |
           aws s3 sync site/ s3://resume-876762732886-us-east-1-an
+      - name: invalidate cloudfront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id E1VSCAY9O4JVUB \
+            --paths "/index.html" "/styles.css"
