@@ -105,7 +105,7 @@ resource "aws_cloudfront_distribution" "resume_distribution" {
   }
 
   enabled             = true
-  is_ipv6_enabled     = false
+  is_ipv6_enabled     = true
   default_root_object = "index.html"
 
   price_class = "PriceClass_100"
