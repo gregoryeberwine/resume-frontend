@@ -23,7 +23,7 @@ jobs:
         run: |
           cd terraform
           terraform init
-          terraform plan
+          terraform apply -auto-approve
   upload:
     runs-on: ubuntu-latest
     needs: build
