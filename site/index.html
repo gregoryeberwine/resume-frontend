@@ -82,7 +82,7 @@
                 const data = await response.json();
                 const outputDiv = document.getElementById('visitorCounter');
                 outputDiv.textContent = JSON.parse(data.body).numberVisitors;
-            }
+            };
             updateCounter();
         </script>
         <footer>
