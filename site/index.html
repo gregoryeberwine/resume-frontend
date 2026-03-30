@@ -73,5 +73,20 @@
                     State University, Columbus, OH  |  <span class="date">August 2014 - 
                     May 2020</span></p>
         </main>
+        <script>
+            async function updateCounter() {
+                const response = await fetch("https://fktbbbxmb2.execute-api.us-east-1.amazonaws.com/Prod", {
+                    method: "POST",
+                    // ...
+                });
+                const data = await response.json();
+                const outputDiv = document.getElementById('visitorCounter');
+                outputDiv.textContent = JSON.parse(data.body).numberVisitors;
+            }
+            updateCounter();
+        </script>
+        <footer>
+            <span id="visitorCounter"></span>
+        </footer>
     </body>
 </html>
