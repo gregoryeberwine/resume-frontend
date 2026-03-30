@@ -1,4 +1,4 @@
-name: Update
+name: Update Frontend
 on: [push]
 env: 
   AWS_REGION: us-east-1
