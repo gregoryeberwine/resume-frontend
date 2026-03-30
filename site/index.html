@@ -80,6 +80,7 @@
                     // ...
                 });
                 const data = await response.json();
+                console.log(data);
                 const outputDiv = document.getElementById('visitorCounter');
                 outputDiv.textContent = JSON.parse(data.body).numberVisitors;
             };
