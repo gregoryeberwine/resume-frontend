@@ -29,7 +29,6 @@ jobs:
           terraform apply -auto-approve
       - name: upload to the bucket
         run: |
-          cd ../
           aws s3 sync site/ s3://$(cd terraform && terraform output -raw s3bucketname)
       - name: invalidate cloudfront cache
         run: |
