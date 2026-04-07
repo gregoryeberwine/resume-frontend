@@ -7,10 +7,6 @@ resource "aws_s3_bucket" "resume" {
   force_destroy    = true
 }
 
-output "s3bucketname" {
-  value = aws_s3_bucket.resume.bucket
-}
-
 data "aws_iam_policy_document" "origin_bucket_policy" {
   statement {
     sid    = "AllowCloudFrontServicePrincipal"
