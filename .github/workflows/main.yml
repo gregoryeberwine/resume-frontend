@@ -61,6 +61,7 @@ jobs:
             --distribution-id $(cd terraform && terraform output -raw cloudfront_distribution_id) \
             --paths "/index.html" "/styles.css"
   post_test:
+    needs: build
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
