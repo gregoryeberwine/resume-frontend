@@ -2,7 +2,7 @@ import re
 from playwright.sync_api import Page, expect
 
 def test_counter_number(page: Page):
-    page.goto("http://localhost:8000")
+    page.goto("https://gregoryeberwine.com")
 
     # expects visitor counter to be a number
     counter = page.locator("#visitorCounter")
@@ -10,7 +10,7 @@ def test_counter_number(page: Page):
     expect(counter).to_have_text(re.compile(r"\d+"))
 
 def test_counter_increments(page: Page):
-    page.goto("http://localhost:8000")
+    page.goto("https://gregoryeberwine.com")
     
     # expects visitor counter value to change after each reload
     counter = page.locator("#visitorCounter")
