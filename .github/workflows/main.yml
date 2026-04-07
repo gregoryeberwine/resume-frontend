@@ -9,7 +9,7 @@ permissions:
   id-token: write
   contents: read
 jobs:
-  test:
+  pre_test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
@@ -27,14 +27,14 @@ jobs:
       - name: serve site locally
         run: python -m http.server 8000 --directory site &
       - name: run tests
-        run: pytest --tracing=retain-on-failure
+        run: pytest tests/test_static.py --tracing=retain-on-failure
       - uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}
         with:
           name: playwright-traces
           path: test-results/      
   build:
-    needs: test
+    needs: pre_test
     runs-on: ubuntu-latest
     steps:
       - name: Git clone the repository
@@ -60,3 +60,27 @@ jobs:
           aws cloudfront create-invalidation \
             --distribution-id $(cd terraform && terraform output -raw cloudfront_distribution_id) \
             --paths "/index.html" "/styles.css"
+  post_test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: set up python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.14.3'
+      - name: install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: ensure browsers are installed
+        run: python -m playwright install --with-deps
+      - name: serve site locally
+        run: python -m http.server 8000 --directory site &
+      - name: run tests
+        run: pytest tests/test_live.py --tracing=retain-on-failure
+      - uses: actions/upload-artifact@v7
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-traces
+          path: test-results/ 

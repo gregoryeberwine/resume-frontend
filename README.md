@@ -23,11 +23,12 @@ The frontend for my [Cloud Resume Challenge](https://cloudresumechallenge.dev/) 
 
 On push to `main`, the GitHub Actions workflow:
 
-1. Authenticates to AWS via OIDC (no stored credentials)
-2. Runs `terraform apply` to ensure infrastructure is current
-3. Syncs site files to S3
-4. Invalidates the CloudFront cache
-5. Runs Playwright tests against the live site
+1. Runs tests against a local web server
+2. Authenticates to AWS via OIDC (no stored credentials)
+3. Runs `terraform apply` to ensure infrastructure is current
+4. Syncs site files to S3
+5. Invalidates the CloudFront cache
+6. Runs tests against the live web page
 
 ## Repo Structure
 
