@@ -47,7 +47,9 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
       - name: install Terraform
         uses: hashicorp/setup-terraform@v4.0.0
-      - name: build with Terraform  
+      - name: build with Terraform
+        env:
+          TF_VAR_iam_role_arn: ${{ secrets.SERVICE_ROLE_ARN }}
         run: |
           cd terraform
           terraform init

@@ -38,7 +38,7 @@ data "aws_iam_policy_document" "origin_bucket_policy" {
 
     principals {
       type        = "AWS"
-      identifiers = ["arn:aws:iam::876762732886:role/GitHubAction-S3Upload"]
+      identifiers = [var.iam_role_arn]
     }
 
     actions = [
@@ -56,7 +56,7 @@ data "aws_iam_policy_document" "origin_bucket_policy" {
 
     principals {
       type        = "AWS"
-      identifiers = ["arn:aws:iam::876762732886:role/GitHubAction-S3Upload"]
+      identifiers = [var.iam_role_arn]
     }
 
     actions = [
