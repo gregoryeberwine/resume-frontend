@@ -24,6 +24,8 @@ jobs:
           pip install -r requirements.txt
       - name: ensure browsers are installed
         run: python -m playwright install --with-deps
+      - name: serve site locally
+        run: python -m http.server 8000 --directory site &
       - name: run tests
         run: pytest --tracing=retain-on-failure
       - uses: actions/upload-artifact@v7
