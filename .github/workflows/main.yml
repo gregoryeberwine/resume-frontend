@@ -69,7 +69,7 @@ jobs:
         uses: hashicorp/setup-terraform@v4.0.0
       - name: build with Terraform
         env:
-          TF_VAR_iam_role_arn: ${{ secrets.SERVICE_ROLE_ARN }}
+          TF_VAR_iam_role_arn: ${{ github.ref_name == 'main' && secrets.PROD_SERVICE_ROLE_ARN || secrets.SERVICE_ROLE_ARN }}
           STATE_BUCKET: ${{ github.ref_name == 'main' && secrets.PROD_STATE_BUCKET || secrets.DEV_STATE_BUCKET }}
         run: |
           cd terraform
