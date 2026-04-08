@@ -110,8 +110,6 @@ resource "aws_cloudfront_distribution" "resume_distribution" {
 
   price_class = "PriceClass_100"
 
-  aliases = ["${local.my_domain}"]
-
   default_cache_behavior {
     cache_policy_id  = "658327ea-f89d-4fab-a63d-7e88639e58f6"
     target_origin_id = local.s3_origin_id
