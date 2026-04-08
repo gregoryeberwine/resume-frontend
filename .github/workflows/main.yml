@@ -47,7 +47,7 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
       - name: Get API URL
         run: |
-          API_URL=$(aws ssm get-parameter --name "/cloud-resume/api-url" --query "Parameter.Value" --output text)
+          API_URL=$(aws ssm get-parameter --name "/cloud_resume/api_url" --query "Parameter.Value" --output text)
           sed -i "s|PLACEHOLDER_API_URL|$API_URL|g" site/index.html"
       - name: install Terraform
         uses: hashicorp/setup-terraform@v4.0.0
