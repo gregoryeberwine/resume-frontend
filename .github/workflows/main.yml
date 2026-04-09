@@ -44,6 +44,8 @@ jobs:
   build:
     needs: pre_test
     runs-on: ubuntu-latest
+    outputs:
+      cloudfront_url: ${{ steps.cf_url.outputs.url }}
     steps:
       - name: Git clone the repository
         uses: actions/checkout@v6
@@ -70,6 +72,7 @@ jobs:
       - name: build with Terraform
         env:
           TF_VAR_iam_role_arn: ${{ github.ref_name == 'main' && secrets.PROD_SERVICE_ROLE_ARN || secrets.SERVICE_ROLE_ARN }}
+          TF_VAR_domain_aliases: ${{ github.ref_name == 'main' && '["gregoryeberwine.com"]' || '[]' }}
           STATE_BUCKET: ${{ github.ref_name == 'main' && secrets.PROD_STATE_BUCKET || secrets.DEV_STATE_BUCKET }}
         run: |
           cd terraform
@@ -83,6 +86,16 @@ jobs:
           aws cloudfront create-invalidation \
             --distribution-id $(cd terraform && terraform output -raw cloudfront_distribution_id) \
             --paths "/index.html" "/styles.css"
+      - name: store cloudfront url in SSM
+        run: |
+          aws ssm put-parameter \
+            --name "/cloud_resume/cloudfront_url" \
+            --type "String" \
+            --value "https://$(cd terraform && terraform output -raw cloudfront_distribution_url)" \
+            --overwrite
+      - name: get cloudfront url
+        id: cf_url
+        run: echo "url=$(cd terraform && terraform output -raw cloudfront_distribution_url)" >> $GITHUB_OUTPUT
   post_test:
     needs: build
     timeout-minutes: 60
@@ -107,6 +120,8 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: python -m playwright install --with-deps chromium
       - name: run tests
+        env:
+          PLAYWRIGHT_BASE_URL: ${{ github.ref_name == 'main' && 'https://gregoryeberwine.com' || needs.build.outputs.cloudfront_url }}
         run: pytest tests/test_live.py --tracing=retain-on-failure
       - uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}

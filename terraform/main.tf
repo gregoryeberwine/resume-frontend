@@ -110,7 +110,7 @@ resource "aws_cloudfront_distribution" "resume_distribution" {
 
   price_class = "PriceClass_100"
 
-  aliases = ["www.${local.my_domain}", "${local.my_domain}"]
+  aliases = var.domain_aliases
 
   default_cache_behavior {
     cache_policy_id  = "658327ea-f89d-4fab-a63d-7e88639e58f6"

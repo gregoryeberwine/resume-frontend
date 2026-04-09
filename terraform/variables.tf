@@ -3,3 +3,8 @@ variable "iam_role_arn" {
   type        = string
   sensitive   = true
 }
+
+variable "domain_aliases" {
+  type    = list(string)
+  default = []
+}
