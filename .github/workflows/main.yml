@@ -88,10 +88,14 @@ jobs:
             --paths "/index.html" "/styles.css"
       - name: store cloudfront url in SSM
         run: |
+          CF_URL=$(cd terraform && terraform output -raw cloudfront_distribution_url)
+          if [ "${{ github.ref_name }}" = "main" ]; then
+            CF_URL="https://gregoryeberwine.com"
+          fi
           aws ssm put-parameter \
             --name "/cloud_resume/cloudfront_url" \
             --type "String" \
-            --value "https://$(cd terraform && terraform output -raw cloudfront_distribution_url)" \
+            --value "$CF_URL" \
             --overwrite
       - name: get cloudfront url
         id: cf_url
