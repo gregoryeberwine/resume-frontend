@@ -17,3 +17,14 @@ terraform {
 provider "aws" {
   region = "us-east-1"
 }
+
+provider "aws" {
+  alias  = "dns"
+  region = "us-east-1"
+  dynamic "assume_role" {
+    for_each = var.route53_role_arn != "" ? [1] : []
+    content {
+      role_arn = var.route53_role_arn
+    }
+  }
+}
