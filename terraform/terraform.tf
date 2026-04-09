@@ -21,8 +21,10 @@ provider "aws" {
 provider "aws" {
   alias  = "dns"
   region = "us-east-1"
-
-  assume_role {
-    role_arn = var.route53_role_arn
+  dynamic "assume_role" {
+    for_each = var.route53_role_arn != "" ? [1] : []
+    content {
+      role_arn = var.route53_role_arn
+    }
   }
 }
