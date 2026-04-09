@@ -107,7 +107,13 @@ jobs:
       - name: install browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: python -m playwright install --with-deps chromium
+      - name: get dev URL
+        if: github.ref_name == 'dev'
+        id: dev_url
+        run: echo "url=$(cd terraform && terraform output -raw cloudfront_distribution_url)" >> $GITHUB_OUTPUT
       - name: run tests
+        env:
+          PLAYWRIGHT_BASE_URL: ${{ github.ref_name == 'main' && 'https://gregoryeberwine.com' || steps.dev_url.outputs.url }}
         run: pytest tests/test_live.py --tracing=retain-on-failure
       - uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}
