@@ -44,6 +44,8 @@ jobs:
   build:
     needs: pre_test
     runs-on: ubuntu-latest
+    outputs:
+      cloudfront_url: ${{ steps.cf_url.outputs.url }}
     steps:
       - name: Git clone the repository
         uses: actions/checkout@v6
@@ -84,6 +86,9 @@ jobs:
           aws cloudfront create-invalidation \
             --distribution-id $(cd terraform && terraform output -raw cloudfront_distribution_id) \
             --paths "/index.html" "/styles.css"
+      - name: get cloudfront url
+        id: cf_url
+        run: echo "url=$(cd terraform && terraform output -raw cloudfront_distribution_url)" >> $GITHUB_OUTPUT
   post_test:
     needs: build
     timeout-minutes: 60
@@ -107,13 +112,9 @@ jobs:
       - name: install browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: python -m playwright install --with-deps chromium
-      - name: get dev URL
-        if: github.ref_name == 'dev'
-        id: dev_url
-        run: echo "url=$(cd terraform && terraform output -raw cloudfront_distribution_url)" >> $GITHUB_OUTPUT
       - name: run tests
         env:
-          PLAYWRIGHT_BASE_URL: ${{ github.ref_name == 'main' && 'https://gregoryeberwine.com' || steps.dev_url.outputs.url }}
+          PLAYWRIGHT_BASE_URL: ${{ github.ref_name == 'main' && 'https://gregoryeberwine.com' || needs.build.outputs.cloudfront_url }}
         run: pytest tests/test_live.py --tracing=retain-on-failure
       - uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}
