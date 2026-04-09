@@ -86,6 +86,13 @@ jobs:
           aws cloudfront create-invalidation \
             --distribution-id $(cd terraform && terraform output -raw cloudfront_distribution_id) \
             --paths "/index.html" "/styles.css"
+      - name: store cloudfront url in SSM
+        run: |
+          aws ssm put-parameter \
+            --name "/cloud_resume/cloudfront_url" \
+            --type "String" \
+            --value "https://$(cd terraform && terraform output -raw cloudfront_distribution_url)" \
+            --overwrite
       - name: get cloudfront url
         id: cf_url
         run: echo "url=$(cd terraform && terraform output -raw cloudfront_distribution_url)" >> $GITHUB_OUTPUT
