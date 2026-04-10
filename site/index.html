@@ -10,10 +10,10 @@
         <main>
             <div id="info">
                 <h1>Gregory Eberwine</h1>
-                <p id="contact">(904) 716-5947  •  <a href="mailto:geberwine@gmail.com" 
-                    id="email">geberwine@gmail.com</a>  •  Cincinnati, OH</p>
-                <p><a href="https://github.com/gregoryeberwine" id="email">GitHub</a> 
-                    <a href="https://www.linkedin.com/in/gregory-eberwine" id="email">LinkedIn</a></p>
+                <p id="contact">(904) 716-5947  •  <a href="mailto:geberwine@gmail.com"
+                    class="link">geberwine@gmail.com</a>  •  Cincinnati, OH</p>
+                <p><a href="https://github.com/gregoryeberwine" class="link">GitHub</a>
+                    <a href="https://www.linkedin.com/in/gregory-eberwine" class="link">LinkedIn</a></p>
             </div>
             <h2>SUMMARY</h2>
             <hr>
@@ -77,14 +77,15 @@
         </main>
         <script>
             async function updateCounter() {
-                const response = await fetch("PLACEHOLDER_API_URL", {
-                    method: "POST",
-                    // ...
-                });
-                const data = await response.json();
-                console.log(data);
-                const outputDiv = document.getElementById('visitorCounter');
-                outputDiv.textContent = data.numberVisitors;
+                try {
+                    const response = await fetch("PLACEHOLDER_API_URL", {
+                        method: "POST",
+                    });
+                    const data = await response.json();
+                    document.getElementById('visitorCounter').textContent = data.numberVisitors;
+                } catch (error) {
+                    document.getElementById('visitorCounter').textContent = "N/A";
+                }
             };
             updateCounter();
         </script>
