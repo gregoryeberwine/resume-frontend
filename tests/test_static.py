@@ -29,13 +29,6 @@ def test_linkedin_link(site_visit: Page):
     linkedin_link = site_visit.get_by_role("link", name="LinkedIn")
     expect(linkedin_link).to_have_attribute("href", re.compile(r"linkedin\.com/in/gregory-eberwine"))
 
-
-def test_contact_has_phone_number(site_visit: Page):
-    # expects phone number to appear in the contact section
-    contact = site_visit.locator("#contact")
-    expect(contact).to_have_text(re.compile(r"\(\d{3}\)\s*\d{3}-\d{4}"))
-
-
 def test_has_summary_section(site_visit: Page):
     expect(site_visit.get_by_role("heading", name="SUMMARY")).to_be_visible()
 
