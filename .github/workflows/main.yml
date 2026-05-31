@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       destroy:
-        description: 'Destroy dev infrastructure (only runs on dev branch)'
+        description: 'Destroy infrastructure'
         required: true
         type: boolean
         default: false
@@ -145,7 +145,7 @@ jobs:
           name: playwright-traces
           path: test-results/
   destroy:
-    if: github.event_name == 'workflow_dispatch' && github.event.inputs.destroy == 'true' && github.ref_name == 'dev'
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.destroy == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Git clone the repository
