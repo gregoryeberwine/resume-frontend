@@ -144,28 +144,37 @@ jobs:
         with:
           name: playwright-traces
           path: test-results/
-  destroy:
+    destroy:
     if: github.event_name == 'workflow_dispatch' && github.event.inputs.destroy == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Git clone the repository
         uses: actions/checkout@v6
       - name: configure aws credentials for dev
+        if: github.ref_name == 'dev'
         uses: aws-actions/configure-aws-credentials@v6.0.0
         with:
           role-to-assume: ${{ secrets.SERVICE_ROLE_ARN }}
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
           aws-region: ${{ env.AWS_REGION }}
+      - name: configure aws credentials for prod
+        if: github.ref_name == 'main'
+        uses: aws-actions/configure-aws-credentials@v6.0.0
+        with:
+          role-to-assume: ${{ secrets.PROD_SERVICE_ROLE_ARN }}
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: ${{ env.AWS_REGION }}
       - name: install Terraform
         uses: hashicorp/setup-terraform@v4.0.0
-      - name: destroy dev infrastructure
+      - name: destroy infrastructure
         env:
-          TF_VAR_route53_role_arn: ''
-          TF_VAR_route53_zone_id: ''
-          TF_VAR_iam_role_arn: ${{ secrets.SERVICE_ROLE_ARN }}
-          TF_VAR_domain_aliases: '[]'
-          STATE_BUCKET: ${{ secrets.DEV_STATE_BUCKET }}
+          TF_VAR_route53_role_arn: ${{ github.ref_name == 'main' && secrets.ROUTE53_ROLE_ARN || '' }}
+          TF_VAR_route53_zone_id: ${{ github.ref_name == 'main' && secrets.ROUTE53_ZONE_ID || '' }}
+          TF_VAR_iam_role_arn: ${{ github.ref_name == 'main' && secrets.PROD_SERVICE_ROLE_ARN || secrets.SERVICE_ROLE_ARN }}
+          TF_VAR_domain_aliases: ${{ github.ref_name == 'main' && '["gregoryeberwine.com"]' || '[]' }}
+          STATE_BUCKET: ${{ github.ref_name == 'main' && secrets.PROD_STATE_BUCKET || secrets.DEV_STATE_BUCKET }}
         run: |
           cd terraform
           terraform init -backend-config="bucket=${STATE_BUCKET}"
+          terraform destroy -auto-approve
           terraform destroy -auto-approve
